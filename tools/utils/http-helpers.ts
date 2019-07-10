@@ -17,13 +17,15 @@ var timeoutScaleFactor = require('./utils.js').timeoutScaleFactor;
 import { Writable } from "stream";
 
 class ConcatStream extends Writable {
+  size: number;
+
   constructor() {
     super();
     this.chunks = [];
     this.size = 0;
   }
 
-  _write(chunk, encoding, next) {
+  _write(chunk, _encoding, next) {
     this.chunks.push(chunk);
     this.size += chunk.length;
     next();
