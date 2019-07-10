@@ -1,7 +1,7 @@
 var selftest = require('../tool-testing/selftest.js');
 var Sandbox = selftest.Sandbox;
 var utils = require('../utils/utils.js');
-import { getUrl } from '../utils/http-helpers.js';
+import { getUrl } from '../utils/http-helpers';
 
 var MONGO_LISTENING =
   { stdout: " [initandlisten] waiting for connections on port" };

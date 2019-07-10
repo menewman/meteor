@@ -28,7 +28,7 @@ tools/fiber-helpers.js
 tools/fs/files.js
 tools/fs/mini-files.js
 tools/func-utils.js
-tools/http-helpers.js
+tools/http-helpers.ts
 tools/inspector.js
 tools/index.js
 tools/mongo-exit-codes.js

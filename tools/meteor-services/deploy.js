@@ -10,7 +10,7 @@ import {
   getSettings,
   mkdtemp,
 } from '../fs/files';
-import { request } from '../utils/http-helpers.js';
+import { request } from '../utils/http-helpers';
 import buildmessage from '../utils/buildmessage.js';
 import {
   pollForRegistrationCompletion,

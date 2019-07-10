@@ -10,7 +10,7 @@ import { Console } from '../console/console.js';
 import { Profile } from '../tool-env/profile';
 import buildmessage from '../utils/buildmessage.js';
 import main from '../cli/main.js';
-import httpHelpers from '../utils/http-helpers.js';
+import httpHelpers from '../utils/http-helpers';
 import { execFileSync, execFileAsync } from '../utils/processes.js';
 
 import './protect-string-proto.js'; // must always come before 'cordova-lib'

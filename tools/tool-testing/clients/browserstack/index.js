@@ -2,7 +2,7 @@ import { execFile } from 'child_process';
 import Client from '../../client.js';
 import configuredClients from "./clients.js";
 import { enterJob } from '../../../utils/buildmessage.js';
-import { getUrlWithResuming } from '../../../utils/http-helpers.js';
+import { getUrlWithResuming } from '../../../utils/http-helpers';
 import { execFileSync } from '../../../utils/processes.js';
 import { ensureDependencies } from '../../../cli/dev-bundle-helpers.js';
 import {

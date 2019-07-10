@@ -1,13 +1,13 @@
 var auth = require('./auth.js');
 var Console = require('../console/console.js').Console;
 var ServiceConnection = require('./service-connection.js');
-var httpHelpers = require('../utils/http-helpers.js');
+var httpHelpers = require('../utils/http-helpers');
 
 exports.AlreadyPrintedMessageError = function () {};
 
 // Opens a DDP connection to a package server. Loads the packages needed for a
 // DDP connection, then calls DDP connect to the package server URL in config,
-// using a current user-agent header composed by http-helpers.js.
+// using a current user-agent header composed by http-helpers.ts.
 exports.openServiceConnection = function (serverUrl) {
   return new ServiceConnection(
     serverUrl,

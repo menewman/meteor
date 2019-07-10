@@ -1,7 +1,7 @@
 var _ = require('underscore');
 var selftest = require('../tool-testing/selftest.js');
 var files = require('../fs/files');
-import { getUrl } from '../utils/http-helpers.js';
+import { getUrl } from '../utils/http-helpers';
 import { sleepMs } from '../utils/utils.js';
 
 var Sandbox = selftest.Sandbox;

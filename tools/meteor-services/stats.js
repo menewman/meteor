@@ -5,7 +5,7 @@ var config = require('./config.js');
 var files = require('../fs/files');
 var auth = require('./auth.js');
 var ServiceConnection = require('./service-connection.js');
-var httpHelpers = require('../utils/http-helpers.js');
+var httpHelpers = require('../utils/http-helpers');
 var Console = require('../console/console.js').Console;
 
 // The name of the package that you add to your app to opt out of

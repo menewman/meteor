@@ -1,7 +1,7 @@
 var _ = require('underscore');
 
 var config = require('../meteor-services/config.js');
-var httpHelpers = require('../utils/http-helpers.js');
+var httpHelpers = require('../utils/http-helpers');
 var release = require('./release.js');
 var files = require('../fs/files');
 var utils = require('../utils/utils.js');
@@ -17,7 +17,7 @@ import { requestGarbageCollection } from "../utils/gc.js";
 
 // Opens a DDP connection to a package server. Loads the packages needed for a
 // DDP connection, then calls DDP connect to the package server URL in config,
-// using a current user-agent header composed by http-helpers.js.
+// using a current user-agent header composed by http-helpers.
 var openPackageServerConnection = function (packageServerUrl) {
   var serverUrl = packageServerUrl || config.getPackageServerUrl();
   return authClient.openServiceConnection(serverUrl);

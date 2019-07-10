@@ -2,7 +2,7 @@ var _ = require('underscore');
 var utils = require('../utils/utils.js');
 var files = require('../fs/files');
 var config = require('./config.js');
-var httpHelpers = require('../utils/http-helpers.js');
+var httpHelpers = require('../utils/http-helpers');
 var fiberHelpers = require('../utils/fiber-helpers.js');
 var querystring = require('querystring');
 var url = require('url');
@@ -361,7 +361,7 @@ var sendAuthorizeRequest = function (clientId, redirectUri, state) {
   // It's very important that we don't have request follow the
   // redirect for us, but instead issue the second request ourselves,
   // since request would pass our credentials along to the redirected
-  // URL. See comments in http-helpers.js.
+  // URL. See comments in http-helpers.ts.
   var codeResult = httpHelpers.request({
     url: authCodeUrl,
     method: 'POST',

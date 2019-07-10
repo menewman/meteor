@@ -105,7 +105,7 @@ export class ClientStream extends StreamClientCommon {
   }
 
   _getProxyUrl(targetUrl) {
-    // Similar to code in tools/http-helpers.js.
+    // Similar to code in tools/http-helpers.ts.
     var proxy = process.env.HTTP_PROXY || process.env.http_proxy || null;
     // if we're going to a secure url, try the https_proxy env variable first.
     if (targetUrl.match(/^wss:/)) {

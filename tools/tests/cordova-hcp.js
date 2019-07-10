@@ -1,6 +1,6 @@
 var _ = require('underscore');
 var selftest = require('../tool-testing/selftest.js');
-var httpHelpers = require('../utils/http-helpers.js');
+var httpHelpers = require('../utils/http-helpers');
 var Sandbox = selftest.Sandbox;
 var testUtils = require('../tool-testing/test-utils.js');
 var config = require('../meteor-services/config.js');

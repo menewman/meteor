@@ -8,7 +8,7 @@ var authClient = require('../meteor-services/auth-client.js');
 var config = require('../meteor-services/config.js');
 var runLog = require('../runners/run-log.js');
 var utils = require('../utils/utils.js');
-var httpHelpers = require('../utils/http-helpers.js');
+var httpHelpers = require('../utils/http-helpers');
 var archinfo = require('../utils/archinfo.js');
 var catalog = require('../packaging/catalog/catalog.js');
 var stats = require('../meteor-services/stats.js');
@@ -2271,7 +2271,7 @@ main.registerCommand({
   var offline = false;
   if (!options['force-online']) {
     try {
-      require('../utils/http-helpers.js').getUrl("http://www.google.com/");
+      require('../utils/http-helpers').getUrl("http://www.google.com/");
     } catch (e) {
       if (e instanceof files.OfflineError) {
         offline = true;
