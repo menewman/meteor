@@ -90,15 +90,15 @@ function spawnMongod(mongodPath: string, port: number, dbPath: string, replSetNa
 // dbDir and port act as filters on the list of running mongos.
 //
 // Yields. Returns an array of objects with keys pid, port, dbDir.
-var findMongoPids;
+let findMongoPids: (dbDir: string | null, port?: number) => {pid: number, port: number, dbDir: string | null}[];
 if (process.platform === 'win32') {
   // Windows doesn't have a ps equivalent that (reliably) includes the command
   // line, so approximate using the combined output of tasklist and netstat.
-  findMongoPids = function (dbDir_unused, port) {
+  findMongoPids = function (_dbDir: string | null, port?: number) {
     var promise = fiberHelpers.makeFulfillablePromise();
 
     child_process.exec('tasklist /fi "IMAGENAME eq mongod.exe"',
-      function (error, stdout, stderr) {
+      function (error: NodeJS.ErrnoException, stdout: string | Buffer, _stderr: string | Buffer) {
         if (error) {
           var additionalInfo = JSON.stringify(error);
           if (error.code === 'ENOENT') {
@@ -110,8 +110,8 @@ if (process.platform === 'win32') {
           return;
         } else {
           // Find the pids of all mongod processes
-          var mongo_pids = [];
-          _.each(stdout.split('\n'), function (line) {
+          const mongo_pids: Record<string, boolean> = {};
+          _.each(stdout.toString().split('\n'), function (line: string) {
             var m = line.match(/^mongod.exe\s+(\d+) /);
             if (m) {
               mongo_pids[m[1]] = true;
@@ -122,7 +122,7 @@ if (process.platform === 'win32') {
           child_process.exec(
             'netstat -ano',
             {maxBuffer: 1024 * 1024 * 10},
-            function (error, stdout, stderr) {
+            function (error: NodeJS.ErrnoException, stdout: string | Buffer, _stderr: string | Buffer) {
             if (error) {
               promise.reject(
                 new Error("Couldn't run netstat -ano: " +
@@ -130,8 +130,8 @@ if (process.platform === 'win32') {
               );
               return;
             } else {
-              var pids = [];
-              _.each(stdout.split('\n'), function (line) {
+              const pids: ReturnType<typeof findMongoPids> = [];
+              _.each(stdout.toString().split('\n'), function (line: string) {
                 var m = line.match(/^\s*TCP\s+\S+:(\d+)\s+\S+\s+LISTENING\s+(\d+)/);
                 if (m) {
                   var found_pid =  parseInt(m[2], 10);
@@ -146,7 +146,8 @@ if (process.platform === 'win32') {
                     pids.push({
                       pid: found_pid,
                       port: found_port,
-                      app_dir: null});
+                      dbDir: null
+                    });
                   }
                 }
               });
@@ -160,7 +161,7 @@ if (process.platform === 'win32') {
     return promise.await();
   };
 } else {
-  findMongoPids = function (dbDir, port) {
+  findMongoPids = function (dbDir: string | null, port?: number) {
     var promise = fiberHelpers.makeFulfillablePromise();
 
     // 'ps ax' should be standard across all MacOS and Linux.
@@ -217,7 +218,7 @@ if (process.platform === 'win32') {
         // (#2158).
         maxBuffer: 1024 * 1024 * 10,
       },
-      function (error, stdout, stderr) {
+      function (error: NodeJS.ErrnoException, stdout: string | Buffer, _stderr: string | Buffer) {
         if (error) {
           promise.reject(
             new Error("Couldn't run ps ax: " +
@@ -227,8 +228,8 @@ if (process.platform === 'win32') {
           return;
         }
 
-        var ret = [];
-        _.each(stdout.split('\n'), function (line) {
+        const ret: ReturnType<typeof findMongoPids> = [];
+        _.each(stdout.toString().split('\n'), function (line: string) {
           // Matches mongos we start. Note that this matches
           // 'fake-mongod' (our mongod stub for automated tests) as well
           // as 'mongod'.
@@ -258,7 +259,7 @@ if (process.platform === 'win32') {
 
 // See if mongo is running already. Yields. Returns the port that
 // mongo is running on or null if mongo is not running.
-var findMongoPort = function (dbDir) {
+var findMongoPort: (dbDir: string) => Promise<number> | Promise<null> | null | number = function (dbDir: string) {
   var pids = findMongoPids(dbDir);
 
   if (pids.length !== 1) {
@@ -289,11 +290,11 @@ if (process.platform === 'win32') {
   // mongod if our current app is not running but there is a left-over file
   // lying around. This still can be better than always failing to connect.
   findMongoPort = function (dbPath) {
-    var mongoPort = null;
+    var mongoPort: number | null = null;
 
     var portFile = files.pathJoin(dbPath, 'METEOR-PORT');
     if (files.exists(portFile)) {
-      mongoPort = files.readFile(portFile, 'utf8').replace(/\s/g, '');
+      mongoPort = parseInt(files.readFile(portFile, 'utf8').replace(/\s/g, ''));
     }
 
     // Now, check if there really is a Mongo server running on this port.
@@ -320,7 +321,7 @@ if (process.platform === 'win32') {
 //
 // This is a big hammer for dealing with still running mongos, but
 // smaller hammers have failed before and it is getting tiresome.
-var findMongoAndKillItDead = function (port, dbPath) {
+var findMongoAndKillItDead = function (port: number, dbPath: string) {
   var pids = findMongoPids(null, port);
 
   // Go through the list serially. There really should only ever be
@@ -412,7 +413,7 @@ var launchMongo = function (options) {
   var subHandles = [];
   var stopped = false;
   var handle = {};
-  var stopPromise = new Promise((resolve, reject) => {
+  var stopPromise = new Promise((_resolve, reject) => {
     handle.stop = function () {
       if (stopped) {
         return;
@@ -554,8 +555,8 @@ var launchMongo = function (options) {
       readyToTalkPromise,
     ]);
 
-    var detectedErrors = {};
-    var stdoutOnData = fiberHelpers.bindEnvironment(function (data) {
+    const detectedErrors: { freeSpace?: boolean, badLocale?: boolean } = {};
+    var stdoutOnData = fiberHelpers.bindEnvironment(function (data: string | Buffer) {
       // note: don't use "else ifs" in this, because 'data' can have multiple
       // lines
       if (/\[initandlisten\] Did not find local replica set configuration document at startup/.test(data) ||
@@ -600,7 +601,7 @@ var launchMongo = function (options) {
 
     var stderrOutput = '';
     proc.stderr.setEncoding('utf8');
-    proc.stderr.on('data', function (data) {
+    proc.stderr.on('data', function (data: string | Buffer) {
       stderrOutput += data;
     });
 
@@ -720,14 +721,13 @@ var launchMongo = function (options) {
 
   try {
     if (options.multiple) {
-      var dbBasePath = files.pathJoin(options.projectLocalDir, 'dbs');
-      _.each(_.range(3), function (i) {
+      _.each(_.range(3), function (i: number) {
         // Did we get stopped (eg, by one of the processes exiting) by now? Then
         // don't start anything new.
         if (stopped) {
           return;
         }
-        var dbPath = files.pathJoin(options.projectLocalDir, 'dbs', ''+i);
+        var dbPath = files.pathJoin(options.projectLocalDir, 'dbs', '' + i);
         launchOneMongoAndWaitForReadyForInitiate(dbPath, options.port + i);
       });
       if (!stopped) {
@@ -862,7 +862,7 @@ _.extend(MRp, {
     }
   },
 
-  _exited: function (code: MongoExitCode, signal, stderr, detectedErrors) {
+  _exited: function (code: MongoExitCode, signal, stderr: string | Buffer, detectedErrors) {
     var self = this;
 
     self.handle = null;
@@ -992,7 +992,7 @@ _.extend(MRp, {
     if (self.multiple) {
       ports.push(self.port + 1, self.port + 2);
     }
-    return _.map(ports, function (port) {
+    return _.map(ports, function (port: number) {
       return "127.0.0.1:" + port;
     }).join(",");
   },
