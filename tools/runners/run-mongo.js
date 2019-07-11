@@ -1,6 +1,6 @@
 var files = require('../fs/files');
 var utils = require('../utils/utils.js');
-var mongoExitCodes = require('../utils/mongo-exit-codes.js');
+var mongoExitCodes = require('../utils/mongo-exit-codes');
 var fiberHelpers = require('../utils/fiber-helpers.js');
 var runLog = require('./run-log.js');
 var child_process = require('child_process');
@@ -928,7 +928,7 @@ _.extend(MRp, {
       message += "\n" + explanation.longText;
     }
 
-    if (explanation === mongoExitCodes.EXIT_NET_ERROR) {
+    if (explanation && explanation.symbol === 'EXIT_NET_ERROR') {
       message += "\n\n" +
 "Check for other processes listening on port " + self.port + "\n" +
 "or other Meteor instances running in the same project.";

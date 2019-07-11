@@ -4,10 +4,7 @@
 
 // Explanations have been rewritten, not copied, for license reasons.
 
-
-var _ = require('underscore');
-
-exports.Codes = {
+export const Codes = {
   0 : { code: 0,
         symbol: "EXIT_CLEAN",
         longText: "MongoDB exited cleanly"
@@ -67,7 +64,3 @@ exports.Codes = {
           "not support filesystems like NFS that do not allow file locking."
         }
 };
-
-_.each(exports.Codes, function (value) {
-  exports[value.symbol] = value;
-});
