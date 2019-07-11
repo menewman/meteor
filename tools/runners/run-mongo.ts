@@ -442,8 +442,7 @@ var launchMongo = function (options) {
     ]).await();
   };
 
-  var launchOneMongoAndWaitForReadyForInitiate = function (dbPath, port,
-                                                           portFile) {
+  var launchOneMongoAndWaitForReadyForInitiate = function (dbPath: string, port: number, portFile?: string) {
     files.mkdir_p(dbPath, 0o755);
 
     var proc = null;
@@ -492,7 +491,7 @@ var launchMongo = function (options) {
             throw e;
           }
         }
-        _.each(dbFiles, function (dbFile) {
+        _.each(dbFiles, function (dbFile: string) {
           if (/^local\./.test(dbFile)) {
             files.unlink(files.pathJoin(dbPath, dbFile));
           }
