@@ -1,6 +1,6 @@
 var files = require('../fs/files');
 var utils = require('../utils/utils.js');
-var mongoExitCodes = require('../utils/mongo-exit-codes');
+import {ExitCodes, MongoExitCode} from '../utils/mongo-exit-codes';
 var fiberHelpers = require('../utils/fiber-helpers.js');
 var runLog = require('./run-log.js');
 var child_process = require('child_process');
@@ -11,7 +11,7 @@ var Console = require('../console/console.js').Console;
 
 // Given a Mongo URL, open an interative Mongo shell on this terminal
 // on that database.
-var runMongoShell = function (url) {
+var runMongoShell = function (url: string) {
   var mongoPath = files.pathJoin(
     files.getDevBundle(), 'mongodb', 'bin', 'mongo'
   );
@@ -39,7 +39,7 @@ var runMongoShell = function (url) {
 };
 
 // Start mongod with a dummy replSet and wait for it to listen.
-function spawnMongod(mongodPath, port, dbPath, replSetName) {
+function spawnMongod(mongodPath: string, port: number, dbPath: string, replSetName: string) {
   const child_process = require('child_process');
 
   mongodPath = files.convertToOSPath(mongodPath);
@@ -862,7 +862,7 @@ _.extend(MRp, {
     }
   },
 
-  _exited: function (code, signal, stderr, detectedErrors) {
+  _exited: function (code: MongoExitCode, signal, stderr, detectedErrors) {
     var self = this;
 
     self.handle = null;
@@ -917,7 +917,7 @@ _.extend(MRp, {
 
     // Too many restarts, too quicky. It's dead. Print friendly
     // diagnostics and give up.
-    var explanation = mongoExitCodes.Codes[code];
+    var explanation = ExitCodes[code];
     var message = "Can't start Mongo server.";
 
     if (explanation && explanation.symbol === 'EXIT_UNCAUGHT' &&

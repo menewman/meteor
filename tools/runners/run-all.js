@@ -11,7 +11,7 @@ const Console = require('../console/console.js').Console;
 const Proxy = require('./run-proxy.js').Proxy;
 const Selenium = require('./run-selenium.js').Selenium;
 const AppRunner = require('./run-app.js').AppRunner;
-const MongoRunner = require('./run-mongo.js').MongoRunner;
+const MongoRunner = require('./run-mongo').MongoRunner;
 const Updater = require('./run-updater.js').Updater;
 
 class Runner {

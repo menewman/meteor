@@ -1286,7 +1286,7 @@ main.registerCommand({
   if (options.args.length === 0) {
     // localhost mode
     var findMongoPort =
-      require('../runners/run-mongo.js').findMongoPort;
+      require('../runners/run-mongo').findMongoPort;
     var mongoPort = findMongoPort(files.pathJoin(options.appDir, ".meteor", "local", "db"));
 
     // XXX detect the case where Meteor is running, but MONGO_URL was
@@ -1328,7 +1328,7 @@ to this command.`);
       auth.maybePrintRegistrationLink();
     }
     process.stdin.pause();
-    var runMongo = require('../runners/run-mongo.js');
+    var runMongo = require('../runners/run-mongo');
     runMongo.runMongoShell(mongoUrl);
     throw new main.WaitForExit;
   }
@@ -1366,7 +1366,7 @@ main.registerCommand({
 
   // XXX detect the case where Meteor is running the app, but
   // MONGO_URL was set, so we don't see a Mongo process
-  var findMongoPort = require('../runners/run-mongo.js').findMongoPort;
+  var findMongoPort = require('../runners/run-mongo').findMongoPort;
   var isRunning = !! findMongoPort(files.pathJoin(options.appDir, ".meteor", "local", "db"));
   if (isRunning) {
     Console.error("reset: Meteor is running.");

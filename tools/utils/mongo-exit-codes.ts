@@ -4,7 +4,7 @@
 
 // Explanations have been rewritten, not copied, for license reasons.
 
-export const Codes = {
+const ExitCodes = {
   0 : { code: 0,
         symbol: "EXIT_CLEAN",
         longText: "MongoDB exited cleanly"
@@ -64,3 +64,6 @@ export const Codes = {
           "not support filesystems like NFS that do not allow file locking."
         }
 };
+
+export { ExitCodes };
+export type MongoExitCode = keyof typeof ExitCodes;

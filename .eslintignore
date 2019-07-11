@@ -65,7 +65,7 @@ tools/tool-env/profile.js
 
 tools/runners/run-all.js
 tools/runners/run-app.js
-tools/runners/run-mongo.js
+tools/runners/run-mongo.ts
 tools/runners/run-proxy.js
 tools/runners/run-selenium.js
 tools/runners/run-updater.js
